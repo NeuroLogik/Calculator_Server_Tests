@@ -20,11 +20,34 @@ namespace Server.Test
         }
 
         [Test]
-        public void TestResultZero()
+        public void TestInitZero()
         {
+            Assert.That(server.FirstNum, Is.EqualTo(0f));
+            Assert.That(server.SecondNum, Is.EqualTo(0f));
             Assert.That(server.Result, Is.EqualTo(0f));
+            Assert.That(server.Response, Is.EqualTo(null));
+            Assert.That(server.ReturnData, Is.EqualTo(null));
         }
 
+        [Test]
+        public void TestReturnDataSize()
+        {
+            Packet packet = new Packet(0, 3f, 5f);
+            transport.SetFakeTransportPacket(packet);
+            server.SingleStep();
+            Assert.That(server.ReturnData.Length, Is.EqualTo(5));
+        }
+
+        [Test]
+        public void TestFloatReceptionGreenLight()
+        {
+            Packet packet = new Packet(0, 3f, 5f);
+            transport.SetFakeTransportPacket(packet);
+            server.SingleStep();
+            Assert.That(server.FirstNum, Is.EqualTo(3f));
+            Assert.That(server.SecondNum, Is.EqualTo(5f));
+        }
+        
         [Test]
         public void TestAdditionGreenLight()
         {
